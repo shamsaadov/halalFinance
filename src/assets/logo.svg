@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <style>
+    .logo-text { font-family: 'Arial', sans-serif; font-weight: bold; }
+    .tagline { font-family: 'Arial', sans-serif; font-size: 14px; }
+  </style>
+  <g>
+    <path d="M40 15 C46 21, 58 25, 50 32 C58 39, 46 43, 40 49 C34 43, 22 39, 30 32 C22 25, 34 21, 40 15" fill="#1e40af" />
+    <circle cx="40" cy="32" r="5" fill="#1e40af" stroke="#ffffff" stroke-width="1" />
+    <text x="65" y="40" class="logo-text" fill="#1e40af" font-size="28">Forsa Finance</text>
+    <text x="85" y="55" class="tagline" fill="#1e40af">Исламская рассрочка</text>
+  </g>
+</svg>
