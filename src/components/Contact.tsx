@@ -8,7 +8,7 @@ import {
 
 const Contact = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div id="feedback-form" className="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div className="bg-primary-800 p-8 rounded-lg">
         <h3 className="text-xl font-semibold mb-6 text-white">
           Связаться с нами

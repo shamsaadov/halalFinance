@@ -90,6 +90,17 @@ const Calculator = () => {
     }
   };
 
+  // Функция для скролла к форме
+  const handleApplyClick = () => {
+    const formElement = document.getElementById("feedback-form");
+    if (formElement) {
+      formElement.scrollIntoView({
+        behavior: "smooth", // Плавная прокрутка
+        block: "end", // Прокрутка к началу элемента
+      });
+    }
+  };
+
   // Расчет процента первоначального взноса
   const initialFeePercentage =
     price > 0 ? Math.round((initialFee / price) * 100) : 0;
@@ -233,7 +244,10 @@ const Calculator = () => {
             </div>
           )}
 
-          <button className="mt-4 w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
+          <button
+            onClick={handleApplyClick}
+            className="mt-4 w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+          >
             Подать заявку на рассрочку
           </button>
         </div>
