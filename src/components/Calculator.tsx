@@ -2,11 +2,16 @@ import { useState, useEffect } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
 // Константы для калькулятора
-const MIN_PRICE = 3000; // 3 тысячи рублей
+const MIN_PRICE = 0; // 0 рублей
 const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
-const MAX_TERM = 12; // 12 месяцев
-const MARKUP_PERCENTAGE = 5; // 5% наценки в месяц
+const MAX_TERM = 24; // 24 месяцев
+const BASE_MARKUP_PERCENTAGE = 15; // Базовый процент наценки 15% в месяц
+const MARKUP_INCREASE = 5; // Увеличение наценки на 5% при достижении отметок
+
+// Отметки для изменения процента наценки
+const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
+const SECOND_MILESTONE = 1500000; // Вторая отметка - 1 000 000 рублей
 
 // Форматтер для валюты
 const formatter = new Intl.NumberFormat("ru-RU");
@@ -26,13 +31,23 @@ const Calculator = () => {
 
   // Расчет всех значений при изменении входных данных
   useEffect(() => {
-    // Расчет оставшейся суммы после первоначального взноса
-    const remainingAmount = price - initialFee;
+    // Теперь не вычитаем первоначальный взнос, используем полную цену
+    const remainingAmount = price;
 
-    // Расчет месячной наценки - 5% от оставшейся суммы
-    const markup = Math.round(remainingAmount * (MARKUP_PERCENTAGE / 100));
+    // Определяем процент наценки в зависимости от цены
+    let currentMarkupPercentage = BASE_MARKUP_PERCENTAGE;
+    if (price >= SECOND_MILESTONE) {
+      currentMarkupPercentage += MARKUP_INCREASE * 2; // 15% + 10% = 25%
+    } else if (price >= FIRST_MILESTONE) {
+      currentMarkupPercentage += MARKUP_INCREASE; // 15% + 5% = 20%
+    }
 
-    // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
+    // Расчет месячной наценки - текущий процент от полной суммы
+    const markup = Math.round(
+      remainingAmount * (currentMarkupPercentage / 100),
+    );
+
+    // Расчет ежемесячного платежа (полная сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
 
     // Расчет общей суммы к оплате
@@ -119,7 +134,7 @@ const Calculator = () => {
             onChange={handlePriceChange}
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
           />
-          <div className="mt-2">
+          <div className="mt-2 relative">
             <input
               type="range"
               min={MIN_PRICE}
@@ -129,8 +144,27 @@ const Calculator = () => {
               onChange={(e) => setPrice(Number(e.target.value))}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>{formatter.format(MIN_PRICE)}₽</span>
+            {/* Метки под ползунком */}
+            <div className="flex justify-between text-xs text-gray-500 mt-1 relative">
+              <span></span>
+              <span
+                className="absolute"
+                style={{
+                  left: `${(FIRST_MILESTONE / MAX_PRICE) * 100}%`,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {formatter.format(FIRST_MILESTONE)}₽
+              </span>
+              <span
+                className="absolute"
+                style={{
+                  left: `${(SECOND_MILESTONE / MAX_PRICE) * 100}%`,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {formatter.format(SECOND_MILESTONE)}₽
+              </span>
               <span>{formatter.format(MAX_PRICE)}₽</span>
             </div>
           </div>
