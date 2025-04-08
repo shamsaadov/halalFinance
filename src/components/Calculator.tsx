@@ -6,8 +6,6 @@ const MIN_PRICE = 0; // 0 рублей
 const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
-const BASE_MARKUP_PERCENTAGE = 15; // Базовый процент наценки 15% в месяц
-const MARKUP_INCREASE = 5; // Увеличение наценки на 5% при достижении отметок
 
 // Отметки для изменения процента наценки
 const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
@@ -31,34 +29,27 @@ const Calculator = () => {
 
   // Расчет всех значений при изменении входных данных
   useEffect(() => {
-    // Теперь не вычитаем первоначальный взнос, используем полную цену
-    const remainingAmount = price;
+    // Оставшаяся сумма после первоначального взноса
+    const remainingAmount = price - initialFee;
 
-    // Определяем процент наценки в зависимости от цены
-    let currentMarkupPercentage = BASE_MARKUP_PERCENTAGE;
-    if (price >= SECOND_MILESTONE) {
-      currentMarkupPercentage += MARKUP_INCREASE * 2; // 15% + 10% = 25%
-    } else if (price >= FIRST_MILESTONE) {
-      currentMarkupPercentage += MARKUP_INCREASE; // 15% + 5% = 20%
-    }
+    // Определяем месячную наценку в зависимости от цены товара
+    const monthlyMarkupValue = price >= 500000 ? 10000 : 3686;
 
-    // Расчет месячной наценки - текущий процент от полной суммы
-    const markup = Math.round(
-      remainingAmount * (currentMarkupPercentage / 100),
-    );
+    // Расчет базового платежа (без наценки)
+    const baseMonthlyPayment = Math.round(remainingAmount / term);
 
-    // Расчет ежемесячного платежа (полная сумма / срок + наценка)
-    const monthly = Math.round(remainingAmount / term) + markup;
+    // Расчет ежемесячного платежа (базовый платеж + наценка)
+    const monthly = baseMonthlyPayment + monthlyMarkupValue;
 
-    // Расчет общей суммы к оплате
-    const total = monthly * term;
+    // Расчет общей суммы к оплате (ежемесячные платежи + первоначальный взнос)
+    const total = monthly * term + initialFee;
 
     // Обновление состояний
     setMonthlyPayment(monthly);
-    setMonthlyMarkup(markup);
+    setMonthlyMarkup(monthlyMarkupValue);
     setTotalAmount(total);
 
-    // Расчет необходимых поручителей на основе суммы и наличия первоначального взноса
+    // Расчет необходимых поручителей
     calculateGuarantors(remainingAmount, initialFee > 0);
   }, [price, initialFee, term]);
 
