@@ -7,6 +7,8 @@ const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
 
+const MONTHLY_MARKUP_PERCENTAGE = 3.83; // 3.83% в месяц
+
 // Отметки для изменения процента наценки
 const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
 const SECOND_MILESTONE = 1500000; // Вторая отметка - 1 000 000 рублей
@@ -32,16 +34,18 @@ const Calculator = () => {
     // Оставшаяся сумма после первоначального взноса
     const remainingAmount = price - initialFee;
 
-    // Определяем месячную наценку в зависимости от цены товара
-    const monthlyMarkupValue = price >= 500000 ? 10000 : 3686;
-
     // Расчет базового платежа (без наценки)
     const baseMonthlyPayment = Math.round(remainingAmount / term);
 
-    // Расчет ежемесячного платежа (базовый платеж + наценка)
+    // Расчет месячной наценки: S × M / 100
+    const monthlyMarkupValue = Math.round(
+      price * (MONTHLY_MARKUP_PERCENTAGE / 100),
+    );
+
+    // Расчет ежемесячного платежа: (S - D) / N + (S × M / 100)
     const monthly = baseMonthlyPayment + monthlyMarkupValue;
 
-    // Расчет общей суммы к оплате (ежемесячные платежи + первоначальный взнос)
+    // Расчет общей суммы к оплате
     const total = monthly * term + initialFee;
 
     // Обновление состояний
@@ -53,26 +57,17 @@ const Calculator = () => {
     calculateGuarantors(remainingAmount, initialFee > 0);
   }, [price, initialFee, term]);
 
-  // Функция для расчета необходимых поручителей на основе диапазона суммы и наличия первоначального взноса
+  // Функция для расчета необходимых поручителей
   const calculateGuarantors = (amount: number, hasDownPayment: boolean) => {
     if (hasDownPayment) {
-      if (amount <= 50000) {
-        setRequiredGuarantors(0);
-      } else if (amount <= 150000) {
-        setRequiredGuarantors(1);
-      } else if (amount <= 300000) {
-        setRequiredGuarantors(2);
-      } else {
-        setRequiredGuarantors(3);
-      }
+      if (amount <= 50000) setRequiredGuarantors(0);
+      else if (amount <= 150000) setRequiredGuarantors(1);
+      else if (amount <= 300000) setRequiredGuarantors(2);
+      else setRequiredGuarantors(3);
     } else {
-      if (amount <= 50000) {
-        setRequiredGuarantors(1);
-      } else if (amount <= 100000) {
-        setRequiredGuarantors(2);
-      } else {
-        setRequiredGuarantors(3);
-      }
+      if (amount <= 50000) setRequiredGuarantors(1);
+      else if (amount <= 100000) setRequiredGuarantors(2);
+      else setRequiredGuarantors(3);
     }
   };
 
