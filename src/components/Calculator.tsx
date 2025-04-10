@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { FaInfoCircle } from "react-icons/fa";
+import ModalForm from "./ModalForm.tsx";
 
 // Константы для калькулятора
 const MIN_PRICE = 0; // 0 рублей
 const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
-
-const MONTHLY_MARKUP_PERCENTAGE = 3.83; // 3.83% в месяц
 
 // Отметки для изменения процента наценки
 const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
@@ -22,6 +21,9 @@ const Calculator = () => {
   const [initialFee, setInitialFee] = useState<number>(0);
   const [term, setTerm] = useState<number>(1);
   const [showInfo, setShowInfo] = useState<boolean>(false);
+  const [markupType, setMarkupType] = useState<"Прочее" | "Автомобиль">(
+    "Прочее",
+  );
 
   // Рассчитываемые значения
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
@@ -29,45 +31,54 @@ const Calculator = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [requiredGuarantors, setRequiredGuarantors] = useState<number>(0);
 
+  // Модальное окно для Docs
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   // Расчет всех значений при изменении входных данных
   useEffect(() => {
-    // Оставшаяся сумма после первоначального взноса
+    // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
 
-    // Расчет базового платежа (без наценки)
-    const baseMonthlyPayment = Math.round(remainingAmount / term);
+    const computedMarkupPercentage = markupType === "Автомобиль" ? 4.5 : 6;
 
-    // Расчет месячной наценки: S × M / 100
-    const monthlyMarkupValue = Math.round(
-      price * (MONTHLY_MARKUP_PERCENTAGE / 100),
+    const markup = Math.round(
+      remainingAmount * (computedMarkupPercentage / 100),
     );
 
-    // Расчет ежемесячного платежа: (S - D) / N + (S × M / 100)
-    const monthly = baseMonthlyPayment + monthlyMarkupValue;
+    // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
+    const monthly = Math.round(remainingAmount / term) + markup;
 
     // Расчет общей суммы к оплате
     const total = monthly * term + initialFee;
 
     // Обновление состояний
     setMonthlyPayment(monthly);
-    setMonthlyMarkup(monthlyMarkupValue);
+    setMonthlyMarkup(markup);
     setTotalAmount(total);
-
-    // Расчет необходимых поручителей
+    // Расчет необходимых поручителей на основе суммы и наличия первоначального взноса
     calculateGuarantors(remainingAmount, initialFee > 0);
-  }, [price, initialFee, term]);
+  }, [price, initialFee, term, markupType]);
 
-  // Функция для расчета необходимых поручителей
+  // Функция для расчета необходимых поручителей на основе диапазона суммы и наличия первоначального взноса
   const calculateGuarantors = (amount: number, hasDownPayment: boolean) => {
     if (hasDownPayment) {
-      if (amount <= 50000) setRequiredGuarantors(0);
-      else if (amount <= 150000) setRequiredGuarantors(1);
-      else if (amount <= 300000) setRequiredGuarantors(2);
-      else setRequiredGuarantors(3);
+      if (amount <= 50000) {
+        setRequiredGuarantors(0);
+      } else if (amount <= 150000) {
+        setRequiredGuarantors(1);
+      } else if (amount <= 300000) {
+        setRequiredGuarantors(2);
+      } else {
+        setRequiredGuarantors(3);
+      }
     } else {
-      if (amount <= 50000) setRequiredGuarantors(1);
-      else if (amount <= 100000) setRequiredGuarantors(2);
-      else setRequiredGuarantors(3);
+      if (amount <= 50000) {
+        setRequiredGuarantors(1);
+      } else if (amount <= 100000) {
+        setRequiredGuarantors(2);
+      } else {
+        setRequiredGuarantors(3);
+      }
     }
   };
 
@@ -104,10 +115,77 @@ const Calculator = () => {
 
   // Расчет процента первоначального взноса
   const initialFeePercentage =
-    price > 0 ? Math.round((initialFee / price) * 100) : 0;
+    totalAmount > 0 ? Math.round((initialFee / totalAmount) * 100) : 0;
 
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+      {/* Добавленный блок выбора типа товара для расчёта наценки */}
+      <div className="mb-6 mt-2 flex flex-col items-center text-center border border-gray-200 rounded-xl py-6 px-4 shadow-sm hover:shadow-md transition-shadow">
+        <label className="block text-xl font-semibold text-gray-800 mb-4">
+          Выберите тип товара
+        </label>
+        <div className="flex items-center space-x-8 justify-center">
+          {/* Чекбокс для "Прочее" */}
+          <label className="flex items-center cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={markupType === "Прочее"}
+                onChange={() => setMarkupType("Прочее")}
+              />
+              <div className="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-full bg-white group-hover:border-indigo-400 transition-all duration-200 peer-checked:bg-indigo-500 peer-checked:border-indigo-500">
+                <svg
+                  className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 10 l4 4 l6 -8"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span className="ml-3 text-gray-700 font-medium group-hover:text-indigo-600 transition-colors duration-200">
+              Прочее
+            </span>
+          </label>
+          {/* Чекбокс для "Автомобиль" */}
+          <label className="flex items-center cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={markupType === "Автомобиль"}
+                onChange={() => setMarkupType("Автомобиль")}
+              />
+              <div className="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-full bg-white group-hover:border-indigo-400 transition-all duration-200 peer-checked:bg-indigo-500 peer-checked:border-indigo-500">
+                <svg
+                  className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 10 l4 4 l6 -8"
+                  />
+                </svg>
+              </div>
+            </div>
+            <span className="ml-3 text-gray-700 font-medium group-hover:text-indigo-600 transition-colors duration-200">
+              Автомобиль
+            </span>
+          </label>
+        </div>
+      </div>
+
       <div className="p-8">
         {/* Цена товара */}
         <div className="mb-6">
@@ -263,7 +341,12 @@ const Calculator = () => {
               </p>
             </div>
           )}
-
+          {/*<button*/}
+          {/*  onClick={() => setIsModalOpen(true)}*/}
+          {/*  className="mt-4 w-full py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"*/}
+          {/*>*/}
+          {/*  Скачать Docx*/}
+          {/*</button>*/}
           <button
             onClick={handleApplyClick}
             className="mt-4 w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
@@ -272,6 +355,7 @@ const Calculator = () => {
           </button>
         </div>
       </div>
+      <ModalForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
