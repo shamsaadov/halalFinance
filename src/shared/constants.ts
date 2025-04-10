@@ -205,3 +205,5 @@ export const generateDocx = (formData: FormData, onClose: () => void) => {
     onClose();
   });
 };
+
+export const formatter = new Intl.NumberFormat("ru-RU");

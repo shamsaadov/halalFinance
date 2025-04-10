@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import ModalForm from "./ModalForm.tsx";
+import ResultModal from "./ResultModal.tsx";
+import { formatter } from "../shared/constants.ts";
 
 // Константы для калькулятора
 const MIN_PRICE = 0; // 0 рублей
@@ -13,7 +15,6 @@ const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 руб�
 const SECOND_MILESTONE = 1500000; // Вторая отметка - 1 000 000 рублей
 
 // Форматтер для валюты
-const formatter = new Intl.NumberFormat("ru-RU");
 
 const Calculator = () => {
   // Состояние для входных данных калькулятора
@@ -24,6 +25,8 @@ const Calculator = () => {
   const [markupType, setMarkupType] = useState<"Прочее" | "Автомобиль">(
     "Прочее",
   );
+
+  const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
 
   // Рассчитываемые значения
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
@@ -39,7 +42,7 @@ const Calculator = () => {
     // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
 
-    const computedMarkupPercentage = markupType === "Автомобиль" ? 4.5 : 6;
+    const computedMarkupPercentage = markupType === "Автомобиль" ? 4 : 5.5;
 
     const markup = Math.round(
       remainingAmount * (computedMarkupPercentage / 100),
@@ -347,15 +350,33 @@ const Calculator = () => {
           {/*>*/}
           {/*  Скачать Docx*/}
           {/*</button>*/}
-          <button
-            onClick={handleApplyClick}
-            className="mt-4 w-full py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-          >
-            Подать заявку на рассрочку
-          </button>
+          {/* Обновленный блок кнопок */}
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <button
+              onClick={handleApplyClick}
+              className="py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+            >
+              Подать заявку на рассрочку
+            </button>
+            <button
+              onClick={() => setIsResultModalOpen(true)}
+              className="py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
+            >
+              Посмотреть результат
+            </button>
+          </div>
         </div>
       </div>
-      <ModalForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/*<ModalForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />*/}
+      <ResultModal
+        isOpen={isResultModalOpen}
+        onClose={() => setIsResultModalOpen(false)}
+        price={price}
+        initialFee={initialFee}
+        monthlyPayment={monthlyPayment}
+        term={term}
+        totalAmount={totalAmount}
+      />
     </div>
   );
 };
