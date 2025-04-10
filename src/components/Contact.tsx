@@ -21,7 +21,7 @@ const Contact = () => {
               href="tel:+71234567890"
               className="text-white hover:text-primary-200 transition-colors"
             >
-              +7 (123) 456-7890
+              +7 (928) 088-38-00
             </a>
           </div>
 
@@ -56,7 +56,7 @@ const Contact = () => {
         </div>
 
         <a
-          href="https://wa.me/79825029591"
+          href="https://wa.me/79280883800"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-8 flex items-center bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded-lg transition-colors w-3/6"
