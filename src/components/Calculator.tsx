@@ -35,25 +35,20 @@ const Calculator = () => {
   const [requiredGuarantors, setRequiredGuarantors] = useState<number>(0);
 
   // Модальное окно для Docs
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Расчет всех значений при изменении входных данных
   useEffect(() => {
     // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
-
     const computedMarkupPercentage = markupType === "Автомобиль" ? 4 : 5.5;
-
     const markup = Math.round(
       remainingAmount * (computedMarkupPercentage / 100),
     );
-
     // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
-
     // Расчет общей суммы к оплате
     const total = monthly * term + initialFee;
-
     // Обновление состояний
     setMonthlyPayment(monthly);
     setMonthlyMarkup(markup);
@@ -115,6 +110,11 @@ const Calculator = () => {
       });
     }
   };
+
+  const totalMarkup = monthlyMarkup * term;
+  const totalMarkupPercent = (totalMarkup / price) * 100; // от цены без вычета взноса
+
+  const monthlyMarkupPercent = totalMarkupPercent / term;
 
   // Расчет процента первоначального взноса
   const initialFeePercentage =
@@ -376,6 +376,10 @@ const Calculator = () => {
         monthlyPayment={monthlyPayment}
         term={term}
         totalAmount={totalAmount}
+        monthlyMarkupPercent={monthlyMarkupPercent}
+        totalMarkupPercent={totalMarkupPercent}
+        totalMarkup={totalMarkup}
+        amountPercent={initialFeePercentage}
       />
     </div>
   );

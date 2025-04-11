@@ -6,9 +6,13 @@ interface ResultModalProps {
   onClose: () => void;
   price: number;
   initialFee: number;
+  amountPercent: number;
   monthlyPayment: number;
   term: number;
   totalAmount: number;
+  monthlyMarkupPercent: number;
+  totalMarkupPercent: number;
+  totalMarkup: number;
 }
 
 const ResultModal: React.FC<ResultModalProps> = ({
@@ -19,6 +23,10 @@ const ResultModal: React.FC<ResultModalProps> = ({
   monthlyPayment,
   term,
   totalAmount,
+  monthlyMarkupPercent,
+  totalMarkupPercent,
+  amountPercent,
+  totalMarkup,
 }) => {
   if (!isOpen) return null;
 
@@ -43,7 +51,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
           </p>
           <p>
             <span className="font-medium">Взнос:</span>{" "}
-            {formatter.format(initialFee)}₽
+            {formatter.format(initialFee)}₽ ({amountPercent}%)
           </p>
           <p>
             <span className="font-medium">Ежемесячная оплата:</span>{" "}
@@ -56,6 +64,14 @@ const ResultModal: React.FC<ResultModalProps> = ({
           <p>
             <span className="font-medium">Общая сумма рассрочки:</span>{" "}
             {formatter.format(totalAmount)}₽
+          </p>
+          <p>
+            <span className="font-medium">Месячная наценка:</span>{" "}
+            {monthlyMarkupPercent.toFixed(2)}%
+          </p>
+          <p>
+            <span className="font-medium">Общая наценка:</span>{" "}
+            {totalMarkupPercent.toFixed(2)}% ({formatter.format(totalMarkup)}₽)
           </p>
         </div>
         <button
