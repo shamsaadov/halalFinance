@@ -13,6 +13,7 @@ interface ResultModalProps {
   monthlyMarkupPercent: number;
   totalMarkupPercent: number;
   totalMarkup: number;
+  requiredGuarantorsToModal: any;
 }
 
 const ResultModal: React.FC<ResultModalProps> = ({
@@ -27,6 +28,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
   totalMarkupPercent,
   amountPercent,
   totalMarkup,
+  requiredGuarantorsToModal,
 }) => {
   if (!isOpen) return null;
 
@@ -72,6 +74,11 @@ const ResultModal: React.FC<ResultModalProps> = ({
           <p>
             <span className="font-medium">Общая наценка:</span>{" "}
             {totalMarkupPercent.toFixed(2)}% ({formatter.format(totalMarkup)}₽)
+          </p>
+          <p>
+            <span className="font-medium text-red-700">
+              Требуется поручителей: {requiredGuarantorsToModal}
+            </span>{" "}
           </p>
         </div>
         <button

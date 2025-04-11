@@ -120,6 +120,18 @@ const Calculator = () => {
   const initialFeePercentage =
     totalAmount > 0 ? Math.round((initialFee / totalAmount) * 100) : 0;
 
+  const remainingAmount = price - initialFee;
+
+  let requiredGuarantorsToModal = 0;
+
+  if (remainingAmount <= 149999) {
+    requiredGuarantorsToModal = 1;
+  } else if (remainingAmount <= 499999) {
+    requiredGuarantorsToModal = 2;
+  } else {
+    requiredGuarantorsToModal = 3;
+  }
+
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
       {/* Добавленный блок выбора типа товара для расчёта наценки */}
@@ -380,6 +392,7 @@ const Calculator = () => {
         totalMarkupPercent={totalMarkupPercent}
         totalMarkup={totalMarkup}
         amountPercent={initialFeePercentage}
+        requiredGuarantorsToModal={requiredGuarantorsToModal}
       />
     </div>
   );
