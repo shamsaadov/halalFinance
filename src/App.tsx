@@ -55,14 +55,14 @@ function App() {
       </section>
 
       {/* Секция тарифов */}
-      <section id="tariffs" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center text-secondary-900 mb-10">
-            Наши тарифы
-          </h2>
-          <Tariffs />
-        </div>
-      </section>
+      {/*<section id="tariffs" className="py-16 bg-white">*/}
+      {/*  <div className="container mx-auto px-4">*/}
+      {/*    <h2 className="text-2xl md:text-3xl font-bold text-center text-secondary-900 mb-10">*/}
+      {/*      Наши тарифы*/}
+      {/*    </h2>*/}
+      {/*    <Tariffs />*/}
+      {/*  </div>*/}
+      {/*</section>*/}
 
       {/* Секция условий */}
       <section id="conditions" className="py-16 bg-gray-50">

@@ -10,6 +10,9 @@ const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
 
+const MAX_PRICE_OTHER = 1000000;
+const MAX_PRICE_AUTO = 3000000;
+
 // Отметки для изменения процента наценки
 const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
 const SECOND_MILESTONE = 1500000; // Вторая отметка - 1 000 000 рублей
@@ -33,9 +36,6 @@ const Calculator = () => {
   const [monthlyMarkup, setMonthlyMarkup] = useState<number>(0);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [requiredGuarantors, setRequiredGuarantors] = useState<number>(0);
-
-  // Модальное окно для Docs
-  //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Расчет всех значений при изменении входных данных
   useEffect(() => {
@@ -83,31 +83,30 @@ const Calculator = () => {
   // Обработка изменения цены
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value.replace(/[^0-9]/g, ""));
-    if (value >= MIN_PRICE && value <= MAX_PRICE) {
+    const maxAllowedPrice =
+      markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+
+    if (value >= MIN_PRICE && value <= maxAllowedPrice) {
       setPrice(value);
-      // Если первоначальный взнос больше цены, корректируем его
       if (initialFee > value) {
-        setInitialFee(Math.floor(value * 0.3)); // 30% от цены
+        setInitialFee(Math.floor(value * 0.3));
       }
     }
   };
+
+  useEffect(() => {
+    const maxAllowedPrice =
+      markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+    if (price > maxAllowedPrice) {
+      setPrice(maxAllowedPrice);
+    }
+  }, [markupType]);
 
   // Обработка изменения первоначального взноса
   const handleInitialFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value.replace(/[^0-9]/g, ""));
     if (value >= 0 && value < price) {
       setInitialFee(value);
-    }
-  };
-
-  // Функция для скролла к форме
-  const handleApplyClick = () => {
-    const formElement = document.getElementById("feedback-form");
-    if (formElement) {
-      formElement.scrollIntoView({
-        behavior: "smooth", // Плавная прокрутка
-        block: "end", // Прокрутка к началу элемента
-      });
     }
   };
 
@@ -203,97 +202,97 @@ const Calculator = () => {
 
       <div className="p-8">
         {/* Цена товара */}
+        {/* Цена товара с кнопками */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Цена товара
           </label>
-          <input
-            type="text"
-            value={formatter.format(price)}
-            onChange={handlePriceChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-          />
-          <div className="mt-2 relative">
+          <div className="flex items-center space-x-2">
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() =>
+                setPrice((prev) => Math.max(prev - 500, MIN_PRICE))
+              }
+            >
+              –
+            </button>
             <input
-              type="range"
-              min={MIN_PRICE}
-              max={MAX_PRICE}
-              step={1000}
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              type="text"
+              value={formatter.format(price)}
+              onChange={handlePriceChange}
+              className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
             />
-            {/* Метки под ползунком */}
-            <div className="flex justify-between text-xs text-gray-500 mt-1 relative">
-              <span></span>
-              <span
-                className="absolute"
-                style={{
-                  left: `${(FIRST_MILESTONE / MAX_PRICE) * 100}%`,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {formatter.format(FIRST_MILESTONE)}₽
-              </span>
-              <span
-                className="absolute"
-                style={{
-                  left: `${(SECOND_MILESTONE / MAX_PRICE) * 100}%`,
-                  transform: "translateX(-50%)",
-                }}
-              >
-                {formatter.format(SECOND_MILESTONE)}₽
-              </span>
-              <span>{formatter.format(MAX_PRICE)}₽</span>
-            </div>
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() => {
+                const maxAllowedPrice =
+                  markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+                setPrice((prev) => Math.min(prev + 500, maxAllowedPrice));
+              }}
+            >
+              +
+            </button>
           </div>
         </div>
 
-        {/* Первоначальный взнос */}
+        {/* Первоначальный взнос с кнопками */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Первоначальный взнос ({initialFeePercentage}%)
           </label>
-          <input
-            type="text"
-            value={formatter.format(initialFee)}
-            onChange={handleInitialFeeChange}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-          />
-          <div className="mt-2">
+          <div className="flex items-center space-x-2">
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() => setInitialFee((prev) => Math.max(prev - 500, 0))}
+            >
+              –
+            </button>
             <input
-              type="range"
-              min={0}
-              max={price * 0.9} // Максимум 90% от цены
-              step={100}
-              value={initialFee}
-              onChange={(e) => setInitialFee(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              type="text"
+              value={formatter.format(initialFee)}
+              onChange={handleInitialFeeChange}
+              className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
             />
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>0₽</span>
-              <span>{formatter.format(price * 0.9)}₽</span>
-            </div>
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() =>
+                setInitialFee((prev) => Math.min(prev + 500, price - 500))
+              }
+            >
+              +
+            </button>
           </div>
         </div>
 
         {/* Срок рассрочки */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Срок рассрочки
+            Срок рассрочки{" "}
+            <span className="ml-4 text-blue-700 font-medium min-w-20">
+              {term} {term === 1 ? "месяц" : "месяцев"}
+            </span>
           </label>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-2">
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() => setTerm((prev) => Math.max(prev - 1, MIN_TERM))}
+            >
+              –
+            </button>
             <input
               type="range"
               min={MIN_TERM}
               max={MAX_TERM}
               value={term}
               onChange={(e) => setTerm(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
-            <span className="ml-4 text-gray-700 font-medium min-w-20 text-center">
-              {term} {term === 1 ? "месяц" : "месяцев"}
-            </span>
+            <button
+              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              onClick={() => setTerm((prev) => Math.min(prev + 1, MAX_TERM))}
+            >
+              +
+            </button>
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>{MIN_TERM} месяц</span>
@@ -302,21 +301,17 @@ const Calculator = () => {
         </div>
 
         {/* Результаты */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-2 gap-6 flex">
           <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm text-gray-500 mb-1">Ежемесячный платеж:</h3>
+            <h3 className="text-sm text-gray-500 mb-1">Месячный платеж:</h3>
             <p className="text-2xl font-bold text-primary-700">
               {formatter.format(monthlyPayment)}₽
             </p>
           </div>
           <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm text-gray-500 mb-1">Месячная наценка:</h3>
-            <p className="text-2xl font-bold text-primary-700">
-              {formatter.format(monthlyMarkup)}₽
-            </p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm text-gray-500 mb-1">Общая сумма:</h3>
+            <h3 className="text-sm text-gray-500 mb-1">
+              Общая сумма рассрочки:
+            </h3>
             <p className="text-2xl font-bold text-primary-700">
               {formatter.format(totalAmount)}₽
             </p>
@@ -356,20 +351,7 @@ const Calculator = () => {
               </p>
             </div>
           )}
-          {/*<button*/}
-          {/*  onClick={() => setIsModalOpen(true)}*/}
-          {/*  className="mt-4 w-full py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"*/}
-          {/*>*/}
-          {/*  Скачать Docx*/}
-          {/*</button>*/}
-          {/* Обновленный блок кнопок */}
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            <button
-              onClick={handleApplyClick}
-              className="py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-            >
-              Подать заявку на рассрочку
-            </button>
+          <div className="mt-4 grid grid-cols-1 gap-4">
             <button
               onClick={() => setIsResultModalOpen(true)}
               className="py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium"
@@ -379,7 +361,6 @@ const Calculator = () => {
           </div>
         </div>
       </div>
-      {/*<ModalForm isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />*/}
       <ResultModal
         isOpen={isResultModalOpen}
         onClose={() => setIsResultModalOpen(false)}
