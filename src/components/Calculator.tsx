@@ -4,20 +4,13 @@ import ModalForm from "./ModalForm.tsx";
 import ResultModal from "./ResultModal.tsx";
 import { formatter } from "../shared/constants.ts";
 
-// Константы для калькулятора
 const MIN_PRICE = 0; // 0 рублей
-const MAX_PRICE = 3000000; // 3 миллиона рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
 
 const MAX_PRICE_OTHER = 1000000;
 const MAX_PRICE_AUTO = 3000000;
-
-// Отметки для изменения процента наценки
-const FIRST_MILESTONE = 500000; // Первая отметка - 300 000 рублей
-const SECOND_MILESTONE = 1500000; // Вторая отметка - 1 000 000 рублей
-
-// Форматтер для валюты
+const MAX_PRICE_GADGETS = 1000000; // Максимальная цена для гаджетов
 
 const Calculator = () => {
   // Состояние для входных данных калькулятора
@@ -25,9 +18,9 @@ const Calculator = () => {
   const [initialFee, setInitialFee] = useState<number>(0);
   const [term, setTerm] = useState<number>(1);
   const [showInfo, setShowInfo] = useState<boolean>(false);
-  const [markupType, setMarkupType] = useState<"Прочее" | "Автомобиль">(
-    "Прочее",
-  );
+  const [markupType, setMarkupType] = useState<
+    "Прочее" | "Автомобиль" | "Гаджеты"
+  >("Прочее");
 
   const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
 
@@ -41,7 +34,8 @@ const Calculator = () => {
   useEffect(() => {
     // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
-    const computedMarkupPercentage = markupType === "Автомобиль" ? 4 : 5.5;
+    const computedMarkupPercentage =
+      markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6.6 : 5.5;
     const markup = Math.round(
       remainingAmount * (computedMarkupPercentage / 100),
     );
@@ -96,7 +90,11 @@ const Calculator = () => {
 
   useEffect(() => {
     const maxAllowedPrice =
-      markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+      markupType === "Прочее"
+        ? MAX_PRICE_OTHER
+        : markupType === "Гаджеты"
+          ? MAX_PRICE_GADGETS
+          : MAX_PRICE_AUTO;
     if (price > maxAllowedPrice) {
       setPrice(maxAllowedPrice);
     }
@@ -138,66 +136,17 @@ const Calculator = () => {
         <label className="block text-xl font-semibold text-gray-800 mb-4">
           Выберите тип товара
         </label>
-        <div className="flex items-center space-x-8 justify-center">
-          {/* Чекбокс для "Прочее" */}
-          <label className="flex items-center cursor-pointer group">
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="peer sr-only"
-                checked={markupType === "Прочее"}
-                onChange={() => setMarkupType("Прочее")}
-              />
-              <div className="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-full bg-white group-hover:border-indigo-400 transition-all duration-200 peer-checked:bg-indigo-500 peer-checked:border-indigo-500">
-                <svg
-                  className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 10 l4 4 l6 -8"
-                  />
-                </svg>
-              </div>
-            </div>
-            <span className="ml-3 text-gray-700 font-medium group-hover:text-indigo-600 transition-colors duration-200">
-              Прочее
-            </span>
-          </label>
-          {/* Чекбокс для "Автомобиль" */}
-          <label className="flex items-center cursor-pointer group">
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="peer sr-only"
-                checked={markupType === "Автомобиль"}
-                onChange={() => setMarkupType("Автомобиль")}
-              />
-              <div className="w-6 h-6 flex items-center justify-center border-2 border-gray-300 rounded-full bg-white group-hover:border-indigo-400 transition-all duration-200 peer-checked:bg-indigo-500 peer-checked:border-indigo-500">
-                <svg
-                  className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 10 l4 4 l6 -8"
-                  />
-                </svg>
-              </div>
-            </div>
-            <span className="ml-3 text-gray-700 font-medium group-hover:text-indigo-600 transition-colors duration-200">
-              Автомобиль
-            </span>
-          </label>
-        </div>
+        <select
+          value={markupType}
+          onChange={(e) =>
+            setMarkupType(e.target.value as "Прочее" | "Автомобиль" | "Гаджеты")
+          }
+          className="w-48 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white text-gray-700 font-medium"
+        >
+          <option value="Прочее">Прочее</option>
+          <option value="Автомобиль">Автомобиль</option>
+          <option value="Гаджеты">Гаджеты</option>
+        </select>
       </div>
 
       <div className="p-8">
