@@ -23,13 +23,21 @@ const ResultModal: React.FC<ResultModalProps> = ({
   initialFee,
   monthlyPayment,
   term,
-  totalAmount,
-  monthlyMarkupPercent,
-  totalMarkupPercent,
   amountPercent,
-  totalMarkup,
   requiredGuarantorsToModal,
 }) => {
+  const roundToNearest500 = (n: number): number => Math.round(n / 500) * 500;
+
+  const computedTotalAmount = roundToNearest500(
+    roundToNearest500(monthlyPayment) * term + initialFee,
+  );
+
+  const computedTotalMarkup = roundToNearest500(computedTotalAmount - price);
+
+  const computedTotalMarkupPercent = (computedTotalMarkup / price) * 100;
+
+  const computedMonthlyMarkupPercent = computedTotalMarkupPercent / term;
+
   if (!isOpen) return null;
 
   return (
@@ -57,7 +65,7 @@ const ResultModal: React.FC<ResultModalProps> = ({
           </p>
           <p>
             <span className="font-medium">Ежемесячная оплата:</span>{" "}
-            {formatter.format(monthlyPayment)}₽
+            {formatter.format(roundToNearest500(monthlyPayment))}₽
           </p>
           <p>
             <span className="font-medium">Срок рассрочки:</span> {term}{" "}
@@ -65,15 +73,17 @@ const ResultModal: React.FC<ResultModalProps> = ({
           </p>
           <p>
             <span className="font-medium">Общая сумма рассрочки:</span>{" "}
-            {formatter.format(totalAmount)}₽
+            {/*{formatter.format(roundToNearest500(totalAmount))}₽ */}
+            {formatter.format(computedTotalAmount)}₽
           </p>
           <p>
             <span className="font-medium">Месячная наценка:</span>{" "}
-            {monthlyMarkupPercent.toFixed(2)}%
+            {computedMonthlyMarkupPercent.toFixed(2)}%
           </p>
           <p>
             <span className="font-medium">Общая наценка:</span>{" "}
-            {totalMarkupPercent.toFixed(2)}% ({formatter.format(totalMarkup)}₽)
+            {computedTotalMarkupPercent.toFixed(2)}% (
+            {formatter.format(computedTotalMarkup)}₽)
           </p>
           <p>
             <span className="font-medium text-red-700">

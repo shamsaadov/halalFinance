@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FaInfoCircle } from "react-icons/fa";
-import ModalForm from "./ModalForm.tsx";
 import ResultModal from "./ResultModal.tsx";
 import { formatter } from "../shared/constants.ts";
 
@@ -20,7 +19,7 @@ const Calculator = () => {
   const [showInfo, setShowInfo] = useState<boolean>(false);
   const [markupType, setMarkupType] = useState<
     "Прочее" | "Автомобиль" | "Гаджеты"
-  >("Прочее");
+  >("Гаджеты");
 
   const [isResultModalOpen, setIsResultModalOpen] = useState<boolean>(false);
 
@@ -35,7 +34,7 @@ const Calculator = () => {
     // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
     const computedMarkupPercentage =
-      markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6.6 : 5.5;
+      markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6 : 5.5;
     const markup = Math.round(
       remainingAmount * (computedMarkupPercentage / 100),
     );
@@ -149,8 +148,7 @@ const Calculator = () => {
         </select>
       </div>
 
-      <div className="p-8">
-        {/* Цена товара */}
+      <div className="p-1">
         {/* Цена товара с кнопками */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -249,23 +247,23 @@ const Calculator = () => {
           </div>
         </div>
 
-        {/* Результаты */}
-        <div className="mt-8 grid grid-cols-2 md:grid-cols-2 gap-6 flex">
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm text-gray-500 mb-1">Месячный платеж:</h3>
-            <p className="text-2xl font-bold text-primary-700">
-              {formatter.format(monthlyPayment)}₽
-            </p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm text-gray-500 mb-1">
-              Общая сумма рассрочки:
-            </h3>
-            <p className="text-2xl font-bold text-primary-700">
-              {formatter.format(totalAmount)}₽
-            </p>
-          </div>
-        </div>
+        {/* Результаты*/}
+        {/*<div className="mt-8 grid grid-cols-2 md:grid-cols-2 gap-6 flex">*/}
+        {/*  <div className="p-4 bg-gray-50 rounded-lg">*/}
+        {/*    <h3 className="text-sm text-gray-500 mb-1">Месячный платеж:</h3>*/}
+        {/*    <p className="text-2xl font-bold text-primary-700">*/}
+        {/*      {formatter.format(monthlyPayment)}₽*/}
+        {/*    </p>*/}
+        {/*  </div>*/}
+        {/*  <div className="p-4 bg-gray-50 rounded-lg">*/}
+        {/*    <h3 className="text-sm text-gray-500 mb-1">*/}
+        {/*      Общая сумма рассрочки:*/}
+        {/*    </h3>*/}
+        {/*    <p className="text-2xl font-bold text-primary-700">*/}
+        {/*      {formatter.format(totalAmount)}₽*/}
+        {/*    </p>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         {/* Дополнительная информация */}
         <div className="mt-6 p-4 border border-gray-200 rounded-lg relative">

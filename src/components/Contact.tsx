@@ -54,7 +54,11 @@ const Contact = () => {
             </a>
           </div>
         </div>
-
+        <button className=" mt-8 bg-primary-600 hover:bg-primary-700 text-white py-3 px-6 rounded-lg transition-colors font-medium">
+          <a href="https://calcus.ru/kalkulyator-investicij" target="_blank">
+            Калькулятор для инвесторов
+          </a>
+        </button>
         <a
           href="https://wa.me/79280883800"
           target="_blank"
