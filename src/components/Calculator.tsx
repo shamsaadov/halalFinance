@@ -8,7 +8,7 @@ const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
 
 const MAX_PRICE_OTHER = 1000000;
-const MAX_PRICE_AUTO = 3000000;
+const MAX_PRICE_AUTO = 1000000;
 const MAX_PRICE_GADGETS = 1000000; // Максимальная цена для гаджетов
 
 const Calculator = () => {
@@ -79,7 +79,8 @@ const Calculator = () => {
     const maxAllowedPrice =
       markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
 
-    if (value >= MIN_PRICE && value <= maxAllowedPrice) {
+    const minAllowedPrice = markupType === "Автомобиль" ? 500000 : MIN_PRICE;
+    if (value >= minAllowedPrice && value <= maxAllowedPrice) {
       setPrice(value);
       if (initialFee > value) {
         setInitialFee(Math.floor(value * 0.3));
@@ -88,14 +89,15 @@ const Calculator = () => {
   };
 
   useEffect(() => {
-    const maxAllowedPrice =
-      markupType === "Прочее"
-        ? MAX_PRICE_OTHER
-        : markupType === "Гаджеты"
-          ? MAX_PRICE_GADGETS
-          : MAX_PRICE_AUTO;
-    if (price > maxAllowedPrice) {
-      setPrice(maxAllowedPrice);
+    //const maxAllowedPrice =
+    //  markupType === "Прочее"
+    //    ? MAX_PRICE_OTHER
+    //    : markupType === "Гаджеты"
+    //      ? MAX_PRICE_GADGETS
+    //      : MAX_PRICE_AUTO;
+    const minAllowedPrice = markupType === "Автомобиль" ? 500000 : MIN_PRICE;
+    if (price < minAllowedPrice) {
+      setPrice(minAllowedPrice);
     }
   }, [markupType]);
 
