@@ -36,7 +36,7 @@ const Calculator = () => {
     const computedMarkupPercentage =
       markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6 : 5.5;
     const markup = Math.round(
-      remainingAmount * (computedMarkupPercentage / 100),
+      remainingAmount * (computedMarkupPercentage / 100)
     );
     // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
@@ -76,15 +76,27 @@ const Calculator = () => {
   // Обработка изменения цены
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value.replace(/[^0-9]/g, ""));
+    setPrice(value);
+    if (initialFee > value) {
+      setInitialFee(Math.floor(value * 0.3));
+    }
+  };
+
+  // Обработка потери фокуса поля цены
+  const handlePriceBlur = () => {
     const maxAllowedPrice =
-      markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+      markupType === "Прочее"
+        ? MAX_PRICE_OTHER
+        : markupType === "Гаджеты"
+          ? MAX_PRICE_GADGETS
+          : MAX_PRICE_AUTO;
 
     const minAllowedPrice = markupType === "Автомобиль" ? 500000 : MIN_PRICE;
-    if (value >= minAllowedPrice && value <= maxAllowedPrice) {
-      setPrice(value);
-      if (initialFee > value) {
-        setInitialFee(Math.floor(value * 0.3));
-      }
+
+    if (price < minAllowedPrice) {
+      setPrice(minAllowedPrice);
+    } else if (price > maxAllowedPrice) {
+      setPrice(maxAllowedPrice);
     }
   };
 
@@ -169,6 +181,7 @@ const Calculator = () => {
               type="text"
               value={formatter.format(price)}
               onChange={handlePriceChange}
+              onBlur={handlePriceBlur}
               className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
             />
             <button
