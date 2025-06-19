@@ -3,6 +3,7 @@ import Calculator from "./components/Calculator";
 import Tariffs from "./components/Tariffs";
 import Conditions from "./components/Conditions";
 import Contact from "./components/Contact";
+import Partners from "./components/Partners";
 import Logo from "./assets/logo.svg";
 
 function App() {
@@ -63,6 +64,16 @@ function App() {
       {/*    <Tariffs />*/}
       {/*  </div>*/}
       {/*</section>*/}
+
+      {/* Секция партнеров */}
+      <section id="partners" className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-secondary-900 mb-10">
+            Наши партнеры
+          </h2>
+          <Partners />
+        </div>
+      </section>
 
       {/* Секция условий */}
       <section id="conditions" className="py-16 bg-gray-50">
