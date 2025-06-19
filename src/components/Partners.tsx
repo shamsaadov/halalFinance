@@ -2,6 +2,7 @@ import { useState } from "react";
 import part1 from "../assets/partner1.png";
 import part2 from "../assets/partner2.png";
 import part3 from "../assets/partner3.png";
+import part4 from "../assets/partner4.png";
 
 const Partners = () => {
   const partners = [
@@ -21,6 +22,18 @@ const Partners = () => {
       id: 3,
       name: "Колизей - Цифровая арена",
       logo: part3,
+      website: "#",
+    },
+    {
+      id: 4,
+      name: "Форса - Натяжные потолки",
+      logo: part4,
+      website: "#",
+    },
+    {
+      id: 5,
+      name: "Форса - Жалюзи",
+      logo: part4,
       website: "#",
     },
   ];
