@@ -1,6 +1,7 @@
 import { useState } from "react";
 import part1 from "../assets/partner1.png";
 import part2 from "../assets/partner2.png";
+import part3 from "../assets/partner3.png";
 
 const Partners = () => {
   const partners = [
@@ -14,6 +15,12 @@ const Partners = () => {
       id: 2,
       name: "Sham Store скупка и продаже телефонов",
       logo: part2,
+      website: "#",
+    },
+    {
+      id: 3,
+      name: "Колизей - Цифровая арена",
+      logo: part3,
       website: "#",
     },
   ];
@@ -43,12 +50,7 @@ const Partners = () => {
             onMouseEnter={() => setHoveredPartner(partner.id)}
             onMouseLeave={() => setHoveredPartner(null)}
           >
-            <a
-              href={partner.website}
-              className="block w-full h-full"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <span className="block w-full h-full">
               <div className="flex flex-col items-center justify-center h-full min-h-[100px]">
                 <img
                   src={partner.logo}
@@ -59,7 +61,7 @@ const Partners = () => {
                   {partner.name}
                 </p>
               </div>
-            </a>
+            </span>
           </div>
         ))}
       </div>
