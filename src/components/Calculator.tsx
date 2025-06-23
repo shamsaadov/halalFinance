@@ -171,9 +171,11 @@ const Calculator = () => {
           <div className="flex items-center space-x-2">
             <button
               className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
-              onClick={() =>
-                setPrice((prev) => Math.max(prev - 500, MIN_PRICE))
-              }
+              onClick={() => {
+                const minAllowedPrice =
+                  markupType === "Автомобиль" ? 500000 : MIN_PRICE;
+                setPrice((prev) => Math.max(prev - 500, minAllowedPrice));
+              }}
             >
               –
             </button>
@@ -206,7 +208,7 @@ const Calculator = () => {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Первоначальный взнос ({initialFeePercentage}%)
           </label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 mb-3">
             <button
               className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
               onClick={() => setInitialFee((prev) => Math.max(prev - 500, 0))}
@@ -227,6 +229,22 @@ const Calculator = () => {
             >
               +
             </button>
+          </div>
+          {/* Ползунок для первоначального взноса */}
+          <div>
+            <input
+              type="range"
+              min={0}
+              max={price - 500}
+              step={500}
+              value={initialFee}
+              onChange={(e) => setInitialFee(Number(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <span>0₽</span>
+              <span>{formatter.format(price - 500)}₽</span>
+            </div>
           </div>
         </div>
 
