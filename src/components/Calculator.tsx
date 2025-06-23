@@ -7,9 +7,9 @@ const MIN_PRICE = 0; // 0 рублей
 const MIN_TERM = 1; // 1 месяц
 const MAX_TERM = 24; // 24 месяцев
 
-const MAX_PRICE_OTHER = 1000000;
-const MAX_PRICE_AUTO = 1000000;
-const MAX_PRICE_GADGETS = 1000000; // Максимальная цена для гаджетов
+const MAX_PRICE_OTHER = 10000000;
+const MAX_PRICE_AUTO = 10000000;
+const MAX_PRICE_GADGETS = 5000000; // Максимальная цена для гаджетов
 
 const Calculator = () => {
   // Состояние для входных данных калькулятора
@@ -188,7 +188,11 @@ const Calculator = () => {
               className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
               onClick={() => {
                 const maxAllowedPrice =
-                  markupType === "Прочее" ? MAX_PRICE_OTHER : MAX_PRICE_AUTO;
+                  markupType === "Прочее"
+                    ? MAX_PRICE_OTHER
+                    : markupType === "Гаджеты"
+                      ? MAX_PRICE_GADGETS
+                      : MAX_PRICE_AUTO;
                 setPrice((prev) => Math.min(prev + 500, maxAllowedPrice));
               }}
             >
