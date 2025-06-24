@@ -36,7 +36,7 @@ const Calculator = () => {
     const computedMarkupPercentage =
       markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6.5 : 5.5;
     const markup = Math.round(
-      remainingAmount * (computedMarkupPercentage / 100),
+      remainingAmount * (computedMarkupPercentage / 100)
     );
     // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
@@ -143,9 +143,9 @@ const Calculator = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden mx-4 sm:mx-auto">
       {/* Добавленный блок выбора типа товара для расчёта наценки */}
-      <div className="mb-6 mt-2 flex flex-col items-center text-center border border-gray-200 rounded-xl py-6 px-4 shadow-sm hover:shadow-md transition-shadow">
+      <div className="mb-6 mt-2 flex flex-col items-center text-center border border-gray-200 rounded-xl py-6 px-4 shadow-sm hover:shadow-md transition-shadow mx-4 sm:mx-0">
         <label className="block text-xl font-semibold text-gray-800 mb-4">
           Выберите тип товара
         </label>
@@ -162,7 +162,7 @@ const Calculator = () => {
         </select>
       </div>
 
-      <div className="p-1">
+      <div className="p-4 sm:p-1">
         {/* Цена товара с кнопками */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -303,7 +303,7 @@ const Calculator = () => {
         {/*</div>*/}
 
         {/* Дополнительная информация */}
-        <div className="mt-6 p-4 border border-gray-200 rounded-lg relative">
+        <div className="mt-6 p-4 border border-gray-200 rounded-lg relative mx-4 sm:mx-0">
           <div
             className="flex items-center mb-2 cursor-pointer"
             onClick={() => setShowInfo(!showInfo)}

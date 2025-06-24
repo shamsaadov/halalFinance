@@ -34,7 +34,7 @@ function App() {
         }`}
       >
         <div className="container mx-auto px-4 flex justify-center items-center">
-          <img src={Logo} alt="HalalPay" className="h-12" />
+          <img src={Logo} alt="HalalPay" style={{ height: "5rem" }} />
         </div>
       </header>
 
@@ -42,13 +42,11 @@ function App() {
       <section className="pt-24 pb-16 bg-gradient-to-b from-primary-100 to-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-secondary-900 mb-2">
+            <h1 className="text-xl md:text-4xl font-bold text-secondary-900 mb-2">
               Исламский калькулятор рассрочки
             </h1>
             <p className="text-lg text-secondary-700 max-w-2xl mx-auto">
-              Рассчитайте платежи по рассрочке в соответствии с принципами
-              исламского финансирования - без процентов, без скрытых комиссий,
-              прозрачно и справедливо.
+              Рассчитайте платежи по рассрочке.
             </p>
           </div>
           <Calculator />
