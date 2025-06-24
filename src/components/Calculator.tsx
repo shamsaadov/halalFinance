@@ -34,9 +34,9 @@ const Calculator = () => {
     // Расчет оставшейся суммы после первоначального взноса
     const remainingAmount = price - initialFee;
     const computedMarkupPercentage =
-      markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6 : 5.5;
+      markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6.5 : 5.5;
     const markup = Math.round(
-      remainingAmount * (computedMarkupPercentage / 100)
+      remainingAmount * (computedMarkupPercentage / 100),
     );
     // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
