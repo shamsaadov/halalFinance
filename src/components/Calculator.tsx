@@ -36,7 +36,7 @@ const Calculator = () => {
     const computedMarkupPercentage =
       markupType === "Автомобиль" ? 4 : markupType === "Гаджеты" ? 6.5 : 5.5;
     const markup = Math.round(
-      remainingAmount * (computedMarkupPercentage / 100)
+      remainingAmount * (computedMarkupPercentage / 100),
     );
     // Расчет ежемесячного платежа (оставшаяся сумма / срок + наценка)
     const monthly = Math.round(remainingAmount / term) + markup;
@@ -145,7 +145,7 @@ const Calculator = () => {
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden mx-4 sm:mx-auto">
       {/* Добавленный блок выбора типа товара для расчёта наценки */}
-      <div className="mb-6 mt-2 flex flex-col items-center text-center border border-gray-200 rounded-xl py-6 px-4 shadow-sm hover:shadow-md transition-shadow mx-4 sm:mx-0">
+      <div className="mb-2 mt-1 flex flex-col items-center text-center border border-gray-200 rounded-xl py-6 px-4 shadow-sm hover:shadow-md transition-shadow mx-4 sm:mx-0">
         <label className="block text-xl font-semibold text-gray-800 mb-4">
           Выберите тип товара
         </label>
@@ -164,13 +164,13 @@ const Calculator = () => {
 
       <div className="p-4 sm:p-1">
         {/* Цена товара с кнопками */}
-        <div className="mb-6">
+        <div className="mb-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Цена товара
           </label>
           <div className="flex items-center space-x-2">
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() => {
                 const minAllowedPrice =
                   markupType === "Автомобиль" ? 500000 : MIN_PRICE;
@@ -187,7 +187,7 @@ const Calculator = () => {
               className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
             />
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() => {
                 const maxAllowedPrice =
                   markupType === "Прочее"
@@ -210,7 +210,7 @@ const Calculator = () => {
           </label>
           <div className="flex items-center space-x-2 mb-3">
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() => setInitialFee((prev) => Math.max(prev - 500, 0))}
             >
               –
@@ -222,7 +222,7 @@ const Calculator = () => {
               className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
             />
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() =>
                 setInitialFee((prev) => Math.min(prev + 500, price - 500))
               }
@@ -258,7 +258,7 @@ const Calculator = () => {
           </label>
           <div className="flex items-center space-x-2">
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() => setTerm((prev) => Math.max(prev - 1, MIN_TERM))}
             >
               –
@@ -272,7 +272,7 @@ const Calculator = () => {
               className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
             <button
-              className="px-3 py-1 border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200"
+              className="px-2 py-2 sm:px-3 border border-gray-400 rounded-lg bg-white hover:bg-gray-50 shadow-sm text-gray-700 hover:text-gray-900 font-medium text-base sm:text-lg"
               onClick={() => setTerm((prev) => Math.min(prev + 1, MAX_TERM))}
             >
               +

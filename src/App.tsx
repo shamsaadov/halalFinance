@@ -41,7 +41,7 @@ function App() {
       {/* Главная секция с калькулятором */}
       <section className="pt-24 pb-16 bg-gradient-to-b from-primary-100 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
+          <div className="text-center mb-2.5">
             <h1 className="text-xl md:text-4xl font-bold text-secondary-900 mb-2">
               Исламский калькулятор рассрочки
             </h1>
